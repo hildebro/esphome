@@ -1,0 +1,43 @@
+substitutions:
+  hostname: test-esp32s3
+  wifi_update_interval: "5s"
+
+esphome:
+  name: bathroom-sensor
+
+esp32:
+  board: esp32-s3-devkitc-1
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: ""
+
+ota:
+  password: ""
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: !secret ap_ssid
+    password: !secret ap_password
+
+sensor:
+  - platform: wifi_signal
+    name: $hostname rssi
+    update_interval: $wifi_update_interval
+
+binary_sensor:
+  - platform: gpio
+    pin: 14
+    name: "PIR Sensor"
+    device_class: motion
+    filters:
+      - delayed_off: 90s
